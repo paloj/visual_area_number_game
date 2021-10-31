@@ -8,7 +8,7 @@ To be more spesific, how far off from the center of your vision can something th
 Description of the test environment (COMPLETELY UNDETERMINED)
 - The subject will be sitting and staring a screen from a distance of 50cm(?)
 - The center of the screen will be leveled to eyesight level (+-?)
-- The minimum size of the screen/monitor for this game is still indeterminate!! But it will need to be a lot bigger than 15". Closer to 32". THIS IS VITAL TO FIGURE OUT!
+- The minimum size of the screen/monitor for this game is still indeterminate!! But it will need to be a lot bigger than 15". Closer to 32". THIS IS VITAL TO FIGURE OUT THE CORRECT SCALE!
 - The subject will use a 9-digit keypad to insert required data (voice?)
 
 PROCEDURE:
