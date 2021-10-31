@@ -19,4 +19,4 @@ PROCEDURE:
 - The system will record the time it took the pair of numbers to appear to the point the subject gave the correct or incorrect input from the keypad
 - Gradually every other appearing pair of nubers will start to appear in off center of the screen. In random position but slowly moving away from the center
 Every other on the center, and every other randomly off center.
-- After hundreds of tests it will be possible to create an area where the subjects will get the answer right and where the answers will start to go wrong.
+- After hundreds of tests it will be possible to create an area where the subjects will get the answer right and where the answers will start to go wrong as a heatmap. This will represent the visual area of understanding of the subject.
