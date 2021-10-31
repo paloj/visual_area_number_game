@@ -1,6 +1,7 @@
 import sys
 from cv2 import cv2
 from time import sleep
+from time import perf_counter_ns as pt
 import numpy as np
 import string
 import random
@@ -66,6 +67,25 @@ def name_input():
         cv2.imshow('appi', namebox)
     return text
 
+def countDown():
+    namebox = np.zeros((height,width,3), np.uint8)
+    while True:
+        namebox = np.zeros((height,width,3), np.uint8)
+        cv2.imshow('appi', namebox)
+        namebox = cv2.putText(namebox, "Start in 3", (int(width/2)-100,int(height/2)), font, 1, (255,255,0), 2)
+        cv2.imshow('appi', namebox)
+        cv2.waitKey(1000)
+        namebox = np.zeros((height,width,3), np.uint8)
+        namebox = cv2.putText(namebox, "Start in 2", (int(width/2)-100,int(height/2)), font, 1, (255,255,0), 2)
+        cv2.imshow('appi', namebox)
+        cv2.waitKey(1000)
+        namebox = np.zeros((height,width,3), np.uint8)
+        namebox = cv2.putText(namebox, "Start in 1", (int(width/2)-100,int(height/2)), font, 1, (255,255,0), 2)
+        cv2.imshow('appi', namebox)
+        cv2.waitKey(1000)
+        break
+
+
 #Generate random answer between 0 and 9 and two integers that add to it
 def question():
     answ = np.random.randint(10)
@@ -121,12 +141,19 @@ def dataToFile():
     pass
 
 #Main loop
-correct = 0
-center = True
-round = 0
+correct = 0     #Number of correct answers
+center = True   #Was the last question on center
+round = 0       #Round number 
 while True:
     #Ask player name
     if (name==""):name=name_input()
+    #Countown before first round
+    if (round == 0):countDown()
+
+    cf = False  #Correct / False = False before correct answer
+
+    #answer time starts here
+    start = pt()
 
     #increment round number
     round += 1
@@ -164,31 +191,54 @@ while True:
     print("Time step is: " + str(kt))           #print only for testing
     t1 = int(mt-(kt*correct))
     print(t1)                                   #print only for testing
+
+    #Here we wait if key is pressed while question is still visible
     key = cv2.waitKey(t1)
+
+    #Print blanc screen after t1 has passed to hide the question
     image = np.zeros((height,width,3), np.uint8)
     blank_image = np.zeros((height,width,3), np.uint8)
+    
+    #If key NOT pressed while question was visible: hide number and wait key:
     cv2.imshow('appi', blank_image)
-
-    #If key not pressed while number was showing, hide number and wait key:
     if key == -1:
         key = cv2.waitKey(0)
     else: pass
+
     #Wait till key is pressed
     if key == ord('q'):
+        t2 = pt() - start
         cv2.destroyAllWindows()
         print(name + ": " + str(correct),"Correct")
+        #Save data on each cycle to a data table. (round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false)
+        saveData(round,x,y,a,b,t1,t2,cf)
+        dataToFile()
         exit()
     elif key == ord(str(answer)):
+        t2 = pt() - start
         # number pressed = answer
         correct += 1
+        cf = True #was correct
+        #Save data on each cycle to a data table. (round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false)
+        saveData(round,x,y,a,b,t1,t2,cf)
         pass
     elif key == ord('j'):
+        t2 = pt() - start
         correct += 1
+        cf = True #was correct
+        #Save data on each cycle to a data table. (round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false)
+        saveData(round,x,y,a,b,t1,t2,cf)
         pass
     else:
+        t2 = pt() - start
+        wc = False #was false
+        #Save data on each cycle to a data table. (round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false)
+        saveData(round,x,y,a,b,t1,t2,cf)
         print(name + ": " + str(correct),"Correct")
+        dataToFile()
         exit()
+    #print the time that took to answer for testing
+    print("kierroksen aika oli: " +str(t2/1000000000))
     key = None
 
-    #Save data on each cycle to a data table. (round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false)
-    #saveData(round,x,y,a,b,t1)
+    
