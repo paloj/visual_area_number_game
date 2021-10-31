@@ -12,11 +12,11 @@ Description of the test environment (COMPLETELY UNDETERMINED)
 - The subject will use a 9-digit keypad to insert required data (voice?)
 
 PROCEDURE:
--The screen will be in full screen mode displaying a crosshair(?) or a circle(?) in the center of the screen. Or nothing?
--A random numbers whose sum is from 0 to 9 will appear on the center of the screen. i.ex. 0+0, 2+2, 8+1, 5+0, 3+3, 7+1. Gradyally appearing a shorter and shorter amount of time
+- The screen will be in full screen mode displaying a crosshair(?) or a circle(?) in the center of the screen. Or nothing?
+- A random numbers whose sum is from 0 to 9 will appear on the center of the screen. i.ex. 0+0, 2+2, 8+1, 5+0, 3+3, 7+1. Gradyally appearing a shorter and shorter amount of time
 (The size and color of the numbers and the backgroud will vary and will be recorded?)
--The subject must give a correct answer to the sum by pressing a corresponding number from the 9-digit keypad
--The system will record the time it took the pair of numbers to appear to the point the subject gave the correct or incorrect input from the keypad
--Gradually every other appearing pair of nubers will start to appear in off center of the screen. In random position but slowly moving away from the center
+- The subject must give a correct answer to the sum by pressing a corresponding number from the 9-digit keypad
+- The system will record the time it took the pair of numbers to appear to the point the subject gave the correct or incorrect input from the keypad
+- Gradually every other appearing pair of nubers will start to appear in off center of the screen. In random position but slowly moving away from the center
 Every other on the center, and every other randomly off center.
--After hundreds of tests it will be possible to create an area where the subjects will get the answer right and where the answers will start to go wrong.
+- After hundreds of tests it will be possible to create an area where the subjects will get the answer right and where the answers will start to go wrong.
