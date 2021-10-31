@@ -1,13 +1,35 @@
 import sys
 from cv2 import cv2
-import pandas as pd
 from time import sleep
 import numpy as np
 import string
+import random
 
 #############################################################################################
-######### 2021                        VERSION 0.1                            J.PALO #########
+######### 2021                        VERSION 0.1a                           J.PALO #########
 #############################################################################################
+
+#Data that will be collected
+round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false = ([] for i in range(8))
+screen_size = ""
+
+#Test if name, maxtime and mintime is given as commandline argument
+#name=player name, maxtime(mt)=time the number question will be visible at the beginning, mintime(it)=minimun time that the question will be visible
+try:
+    name = sys.argv[1]
+except:
+    print("No name given, name prompt will appear")
+    name = ""
+try:
+    mt = float(sys.argv[2])
+except:
+    print("No max visibility time given. Default 1s will be used")
+    mt = 1000 #max time that question is visible
+try:
+    it = float(sys.argv[3])
+except:
+    print("No min visibility time given. Default 100ms will be used")
+    it = 100 #mIn time that question is visible
 
 # setup text
 font = cv2.FONT_HERSHEY_SIMPLEX
@@ -26,6 +48,7 @@ print(width, height)
 #Create blank image to fill page
 blank_image = np.zeros((height,width,3), np.uint8)
 
+#Ask for player name in cv2 style if not given as argument
 def name_input():
     text = ""
     namebox = np.zeros((height,width,3), np.uint8)
@@ -65,26 +88,34 @@ def radius(wh):
     #How far off center can question appear?
     if (wh==1):
         war = int((width/2)*remap(correct/100,0,100,0,100))
-        print (war)
+        #print (war)
         if (war == 0):
             return 0
         else:
             wh = np.random.randint(war*(-1),war,1)
-            print (wh)
+            #print (wh)
             return wh
     else:
         har = int((height/2)*remap(correct/100,0,100,0,100))
-        print (har)
+        #print (har)
         if (har == 0):
             return 0
         else:
             wh = np.random.randint(har*(-1),har,1)
-            print (wh)
+            #print (wh)
             return wh
 
-#Save data on each cycle to a data table. (round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false, screen_size)
-def saveData(rd,x,y,n1,n2,t1,t2,cf,sc):
-    pass
+#Save data on each cycle to a data table. (round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false)
+def saveData(rd,x,y,n1,n2,t1,t2,cf):
+    #append new values to the end of every list
+    round_no.append(rd)
+    x_coordinate.append(x)
+    y_coordinate.append(y)
+    number1.append(n1)
+    number2.append(n2)
+    time_showing.append(t1)
+    time_took_to_answer.append(t2)
+    correct_false.append(cf)
 
 #Create file from game data
 def dataToFile():
@@ -93,10 +124,13 @@ def dataToFile():
 #Main loop
 correct = 0
 center = True
-name = ""
+round = 0
 while True:
     #Ask player name
     if (name==""):name=name_input()
+
+    #increment round number
+    round += 1
 
     #Generate numbers that add to 0-9
     a, b = question()
@@ -110,8 +144,10 @@ while True:
     blank_image = np.zeros((height,width,3), np.uint8)
     cv2.imshow('appi', image)
 
-    #If previous question was in a center, place question away from center of screen
-    if(center == True):
+    #If previous question was in a center, place question away from center of screen with a 66% chanse
+
+    #If previous was in center then 66% chance to appear somewhere else
+    if(center == True and random.randrange(3) != 0):
         image = cv2.putText(blank_image, qstring, (int(width/2+(radius(1))),int(height/2+(radius(2)))), font, 1, (255,255,0), 2)
         center = False
     #If previous question was away from a center, place question directly to center of screen
@@ -122,7 +158,13 @@ while True:
     #Show question
     cv2.imshow('appi', image)
 
-    key = cv2.waitKey(int(1000*(1-correct/100)))
+    #Time for how long the question will be visible
+    #t1 = int(1000*(1-correct/100))
+    kt = mt/it
+    print("Time step is: " + str(kt))
+    t1 = int(mt-(kt*correct))
+    print(t1)
+    key = cv2.waitKey(t1)
     image = np.zeros((height,width,3), np.uint8)
     blank_image = np.zeros((height,width,3), np.uint8)
     cv2.imshow('appi', blank_image)
@@ -140,7 +182,13 @@ while True:
         # number pressed = answer
         correct += 1
         pass
+    elif key == ord('j'):
+        correct += 1
+        pass
     else:
         print(name + ": " + str(correct),"Correct")
         exit()
     key = None
+
+    #Save data on each cycle to a data table. (round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false)
+    #saveData()
