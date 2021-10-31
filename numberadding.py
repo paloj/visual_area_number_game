@@ -43,7 +43,6 @@ width = window_size[2]
 print ("Width = " + str(width))
 height = window_size[3]
 print ("Height = " + str(height))
-print(width, height)
 
 #Create blank image to fill page
 blank_image = np.zeros((height,width,3), np.uint8)
@@ -144,11 +143,12 @@ while True:
     blank_image = np.zeros((height,width,3), np.uint8)
     cv2.imshow('appi', image)
 
-    #If previous question was in a center, place question away from center of screen with a 66% chanse
+    x=int(width/2+(radius(1)))
+    y=int(height/2+(radius(2)))
 
-    #If previous was in center then 66% chance to appear somewhere else
+    #If previous question was in a center, place question away from center of screen with a 66% chanse
     if(center == True and random.randrange(3) != 0):
-        image = cv2.putText(blank_image, qstring, (int(width/2+(radius(1))),int(height/2+(radius(2)))), font, 1, (255,255,0), 2)
+        image = cv2.putText(blank_image, qstring, (x,y), font, 1, (255,255,0), 2)
         center = False
     #If previous question was away from a center, place question directly to center of screen
     else:
@@ -159,11 +159,11 @@ while True:
     cv2.imshow('appi', image)
 
     #Time for how long the question will be visible
-    #t1 = int(1000*(1-correct/100))
+    #t1 = int(1000*(1-correct/100)) # <-- ok from 1sec to lower with 10ms increment but not scalable
     kt = mt/it
-    print("Time step is: " + str(kt))
+    print("Time step is: " + str(kt))           #print only for testing
     t1 = int(mt-(kt*correct))
-    print(t1)
+    print(t1)                                   #print only for testing
     key = cv2.waitKey(t1)
     image = np.zeros((height,width,3), np.uint8)
     blank_image = np.zeros((height,width,3), np.uint8)
@@ -191,4 +191,4 @@ while True:
     key = None
 
     #Save data on each cycle to a data table. (round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false)
-    #saveData()
+    #saveData(round,x,y,a,b,t1)
