@@ -1,18 +1,32 @@
+#############################################################################################
+######### 2021-11-06                  VERSION 0.1a                           J.PALO #########
+#############################################################################################
+
+###
+#current status: only number input by keyboard input
+#in development: number input data collection and data file write in csv format for analysis
+#future development: ansver input as voice input
+###
+
+#############################################################################################
+# THIS PROGRAM PRINTS SIMPLE QUESTIONS ON A SCREEN FOR A SHORT AMOUNT OF TIME.
+# QUESTIONS ARE IN A FORM X+X WHERE THE ANSWER IS BETWEEN 0 AND 9.
+# USER GIVES ANSWER BY PRESSING THE CORRECT NUMBER KEY  A KEYBOARD.
+#############################################################################################
 import sys
-from cv2 import cv2
+from cv2 import WND_PROP_OPENGL, cv2
 from time import sleep
 from time import perf_counter_ns as pt
 import numpy as np
 import string
 import random
+import csv
 
-#############################################################################################
-######### 2021                        VERSION 0.1a                           J.PALO #########
-#############################################################################################
 
 #Data that will be collected
 round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false = ([] for i in range(8))
 screen_size = ""
+filedata = [round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false, screen_size]
 
 #Test if name, maxtime and mintime is given as commandline argument
 #name=player name, maxtime(mt)=time the number question will be visible at the beginning, mintime(it)=minimun time that the question will be visible
@@ -38,12 +52,16 @@ font = cv2.FONT_HERSHEY_SIMPLEX
 #Create initial fullscreen window
 cv2.namedWindow('appi', cv2.WND_PROP_FULLSCREEN)
 cv2.setWindowProperty('appi', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-sleep(2)
+sleep(1)
+
 window_size = cv2.getWindowImageRect('appi')
 width = window_size[2]
 print ("Width = " + str(width))
 height = window_size[3]
 print ("Height = " + str(height))
+
+#Screen size string variable if screen size is detected
+if width > 0 and height > 0: screen_size = str(width)+","+str(height)
 
 #Create blank image to fill page
 blank_image = np.zeros((height,width,3), np.uint8)
@@ -136,12 +154,14 @@ def saveData(rd,x,y,n1,n2,t1,t2,cf):
     time_took_to_answer.append(t2)
     correct_false.append(cf)
 
+
 #Create file from game data
 def dataToFile():
     pass
 
 #Main loop
 correct = 0     #Number of correct answers
+wrong = 0       #Number of wrong aswers
 center = True   #Was the last question on center
 round = 0       #Round number 
 while True:
@@ -199,7 +219,7 @@ while True:
     image = np.zeros((height,width,3), np.uint8)
     blank_image = np.zeros((height,width,3), np.uint8)
     
-    #If key NOT pressed while question was visible: hide number and wait key:
+    #If key NOT pressed while question was visible: hide number and wait for key to be pressed:
     cv2.imshow('appi', blank_image)
     if key == -1:
         key = cv2.waitKey(0)
@@ -236,17 +256,24 @@ while True:
         saveData(round,x,y,a,b,t1,t2,cf)
         print(name + ": " + str(correct),"Correct")
         dataToFile()
-        print(round_no)
-        print(x_coordinate)
-        print(y_coordinate)
-        print(number1)
-        print(number2)
-        print(time_showing)
-        print(time_took_to_answer)
-        print(correct_false)
-        print(screen_size)
+
+        #prints for testing
+        print(filedata) #For testing print all file data
+
+        #For testing print lists
+
+        #print(round_no)
+        #print(x_coordinate)
+        #print(y_coordinate)
+        #print(number1)
+        #print(number2)
+        #print(time_showing)
+        #print(time_took_to_answer)
+        #print(correct_false)
+        #print(screen_size)
         exit()
-    #print the time that took to answer for testing
+
+    #print the time that took to answer. For testing!
     print("kierroksen aika oli: " +str(t2/1000000000))
     key = None
 
