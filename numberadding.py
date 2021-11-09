@@ -17,6 +17,7 @@ import sys
 from cv2 import WND_PROP_OPENGL, cv2
 from time import sleep
 from time import perf_counter_ns as pt
+from datetime import datetime
 import numpy as np
 import string
 import random
@@ -26,7 +27,8 @@ import csv
 #Data that will be collected
 round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false = ([] for i in range(8))
 screen_size = ""
-filedata = [round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false, screen_size]
+headers = "round_no", "x_coordinate", "y_coordinate", "number1", "number2", "time_showing", "time_took_to_answer", "correct_false"
+filedata = [round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false]
 
 #Test if name, maxtime and mintime is given as commandline argument
 #name=player name, maxtime(mt)=time the number question will be visible at the beginning, mintime(it)=minimun time that the question will be visible
@@ -61,7 +63,7 @@ height = window_size[3]
 print ("Height = " + str(height))
 
 #Screen size string variable if screen size is detected
-if width > 0 and height > 0: screen_size = str(width)+","+str(height)
+if width > 0 and height > 0: screen_size = str(width)+"x"+str(height)
 
 #Create blank image to fill page
 blank_image = np.zeros((height,width,3), np.uint8)
@@ -156,9 +158,19 @@ def saveData(rd,x,y,n1,n2,t1,t2,cf):
 
 
 #Create file from game data
-def dataToFile():
-    pass
-
+def dataToFile(name, screensize, headers, filedata):
+    timestamp= datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    filename = "./saves/"+name+"_"+timestamp+"_"+screensize+".csv"
+    try:
+        with open(filename, 'w', newline='') as f:
+            write = csv.writer(f, delimiter=";")
+            write.writerow(headers)
+            for row in filedata:
+                write.writerow(row)
+    except Exception as e:
+        print(e)
+        exit("Error saving filedata to .csv file!")
+        
 #Main loop
 correct = 0     #Number of correct answers
 wrong = 0       #Number of wrong aswers
@@ -193,7 +205,7 @@ while True:
     x=int(width/2+(radius(1)))
     y=int(height/2+(radius(2)))
 
-    #If previous question was in a center, place question away from center of screen with a 66% chanse
+    #If previous question was in a center, place question away from center of screen with a 66% chance
     if(center == True and random.randrange(3) != 0):
         image = cv2.putText(blank_image, qstring, (x,y), font, 1, (255,255,0), 2)
         center = False
@@ -226,7 +238,7 @@ while True:
     else: pass
 
     #Wait till key is pressed
-    if key == ord('q'):
+    if key == ord('q'):                 #QUIT
         t2 = pt() - start
         cv2.destroyAllWindows()
         print(name + ": " + str(correct),"Correct")
@@ -234,7 +246,7 @@ while True:
         saveData(round,x,y,a,b,t1,t2,cf)
         dataToFile()
         exit()
-    elif key == ord(str(answer)):
+    elif key == ord(str(answer)):       #CORRECT ANSWER
         t2 = pt() - start
         # number pressed = answer
         correct += 1
@@ -242,35 +254,23 @@ while True:
         #Save data on each cycle to a data table. (round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false)
         saveData(round,x,y,a,b,t1,t2,cf)
         pass
-    elif key == ord('j'):
+    elif key == ord('j'):               #CHEAT AND MARK CORRECT ANSWER
         t2 = pt() - start
         correct += 1
         cf = True #was correct
         #Save data on each cycle to a data table. (round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false)
         saveData(round,x,y,a,b,t1,t2,cf)
         pass
-    else:
+    else:                               #WRONG ASNWER
         t2 = pt() - start
         wc = False #was false
         #Save data on each cycle to a data table. (round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false)
         saveData(round,x,y,a,b,t1,t2,cf)
         print(name + ": " + str(correct),"Correct")
-        dataToFile()
+        
+        filedata = zip(round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false)
+        dataToFile(str(name),str(screen_size),headers,filedata)
 
-        #prints for testing
-        print(filedata) #For testing print all file data
-
-        #For testing print lists
-
-        #print(round_no)
-        #print(x_coordinate)
-        #print(y_coordinate)
-        #print(number1)
-        #print(number2)
-        #print(time_showing)
-        #print(time_took_to_answer)
-        #print(correct_false)
-        #print(screen_size)
         exit()
 
     #print the time that took to answer. For testing!
