@@ -5,15 +5,15 @@ Recuirements:
 - Python 3.x
 
 Imports:
-  import sys
-  from cv2 import WND_PROP_OPENGL, cv2
-  from time import sleep
-  from time import perf_counter_ns as pt
-  from datetime import datetime
-  import numpy as np
-  import string
-  import random
-  import csv
+- import sys
+- from cv2 import WND_PROP_OPENGL, cv2
+- from time import sleep
+- from time import perf_counter_ns as pt
+- from datetime import datetime
+- import numpy as np
+- import string
+- import random
+- import csv
   
  Run:
  - python3 numberadding.py
