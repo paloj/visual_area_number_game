@@ -1,6 +1,34 @@
 # visual_area_number_game
 Game that shows a simple number adding questions on different parts of screen for a short time to determine the "heatmap" of visual area of understanding of what you see
 
+Recuirements:
+- Python 3.x
+
+Imports:
+  import sys
+  from cv2 import WND_PROP_OPENGL, cv2
+  from time import sleep
+  from time import perf_counter_ns as pt
+  from datetime import datetime
+  import numpy as np
+  import string
+  import random
+  import csv
+  
+ Run:
+ - python3 numberadding.py
+ 
+ Commandline arguments (optional):
+ -myname -maxtimenumbershowinginms -mintimenumbershowinginms
+ 
+ How to run exmaples:
+ - python3 numberadding.py (name input will be propted)
+ - python3 numberadding.py -muburns (no name input prompt)
+ - python3 numberadding.py -mrburns -2000 -200 (custom times for max and min times for number question on screen)
+
+##################################################################################################################
+###                             README
+##################################################################################################################
 
 How much do you understand of what you see?
 To be more spesific, how far off from the center of your vision can something that requires thinking be at?
