@@ -26,9 +26,9 @@ Imports:
  - python3 numberadding.py -muburns (no name input prompt)
  - python3 numberadding.py -mrburns -2000 -200 (custom times for max and min times for number question on screen)
 
-##################################################################################################################
+#################################################################################
 ###                             README
-##################################################################################################################
+#################################################################################
 
 How much do you understand of what you see?
 To be more spesific, how far off from the center of your vision can something that requires thinking be at?
