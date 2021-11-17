@@ -47,6 +47,11 @@ try:
 except:
     print("No min visibility time given. Default 100ms will be used")
     it = 100 #mIn time that question is visible
+try:
+    steps = float(sys.argv[3])
+except:
+    print("No number of steps given. Default 100 will be used")
+    steps = 100 #How many rounds from maxtime to mintime
 
 # setup text
 font = cv2.FONT_HERSHEY_SIMPLEX
@@ -210,6 +215,16 @@ def findKey(key):
     if key==ord('j'): return key
 
     return key
+
+#How long will question stay visible on each round
+def timeVisible(round):
+    #How much less showing each round: maxtime-mintime / steps
+    kt = int(((mt-it)/steps))
+    print("Time step is: " + str(kt))           #print only for testing
+    if int(mt-(kt*round)) >= it:
+        return int(mt-(kt*round))
+    else:
+        return int(it)
         
 #Main loop
 correct = 0     #Number of correct answers
@@ -217,12 +232,14 @@ wrong = 0       #Number of wrong aswers
 center = True   #Was the last question on center
 round = 0       #Round number 
 while True:
+
     #Ask player name
     if (name==""):name=name_input()
     #Countown before first round
     if (round == 0):countDown()
 
-    cf = False  #Correct / False = False before correct answer
+    #Correct / False = False before correct answer
+    cf = False
 
     #answer time starts here
     start = pt()
@@ -242,8 +259,14 @@ while True:
     blank_image = np.zeros((height,width,3), np.uint8)
     cv2.imshow('appi', image)
 
+    #Calculate the area where the numbers can appear
     x=int(width/2+(radius(1)))
+    if x < 10: x = 10
+    if x > width-80: x = width - 80
+
     y=int(height/2+(radius(2)))
+    if y < 30: y = 30
+    if y > height-50: y = height - 50
 
     #If previous question was in a center, place question away from center of screen with a 66% chance
     if(center == True and random.randrange(3) != 0):
@@ -258,11 +281,8 @@ while True:
     cv2.imshow('appi', image)
 
     #Time for how long the question will be visible
-    #t1 = int(1000*(1-correct/100)) # <-- ok from 1sec to lower with 10ms increment but not scalable
-    kt = mt/it
-    print("Time step is: " + str(kt))           #print only for testing
-    t1 = int(mt-(kt*correct))
-    print(t1)                                   #print only for testing
+    t1 = timeVisible(round)
+    print(t1)
 
     #Here we wait if key is pressed while question is still visible
     key = cv2.waitKey(t1)
