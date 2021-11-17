@@ -133,7 +133,7 @@ def question_old():
 def question():
     answ = np.random.randint(10) #random number (0-9)
     if answ == 0:
-        if np.random.choice([0, 1]) == '0': #if answer is 0 then 50/50 chance to try new random generation
+        if np.random.choice([0, 1]) == 0: #if answer is 0 then 50/50 chance to try new random generation
             num1 = 0
         else:
             answ = np.random.randint(10)
@@ -156,12 +156,13 @@ def radius(wh):
     #How far off center can question appear?
     if (wh==1):
         war = int((width/2)*remap(correct/100,0,100,0,100))
-        #print (war)
+        print (war)
         if (war == 0):
             return 0
         else:
+            if war > width/2: war = width/2
             wh = np.random.randint(war*(-1),war,1)
-            #print (wh)
+            print (wh)
             return wh
     else:
         har = int((height/2)*remap(correct/100,0,100,0,100))
@@ -169,6 +170,7 @@ def radius(wh):
         if (har == 0):
             return 0
         else:
+            if har > height/2: har = height / 2
             wh = np.random.randint(har*(-1),har,1)
             #print (wh)
             return wh
@@ -251,8 +253,11 @@ while True:
     a, b = question()
     answer = a+b
 
-    #Form a question string from the generated numbers 
-    qstring = str(a)+"+"+str(b)
+    #Form a question string from the generated numbers. 50% chance for the order
+    if np.random.choice([0, 1]) == 0:
+        qstring = str(a)+"+"+str(b)
+    else:
+        qstring = str(b)+"+"+str(a)
 
     #Blank screen images before every cycle
     image = np.zeros((height,width,3), np.uint8)
