@@ -14,7 +14,8 @@
 # USER GIVES ANSWER BY PRESSING THE CORRECT NUMBER KEY  A KEYBOARD.
 #############################################################################################
 import sys
-from cv2 import WND_PROP_OPENGL, cv2
+from cv2 import WND_PROP_OPENGL
+import cv2
 from time import sleep
 from time import perf_counter_ns as pt
 from datetime import datetime
@@ -57,10 +58,15 @@ cv2.setWindowProperty('appi', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 sleep(1)
 
 window_size = cv2.getWindowImageRect('appi')
-width = window_size[2]
-print ("Width = " + str(width))
-height = window_size[3]
-print ("Height = " + str(height))
+if window_size[2] > 1:
+    width = window_size[2]
+    print ("Width = " + str(width))
+    height = window_size[3]
+    print ("Height = " + str(height))
+else:
+    print("Window size could not be determined! Using 3440 x 1440")
+    width = 3440
+    height = 1440
 
 #Screen size string variable if screen size is detected
 if width > 0 and height > 0: screen_size = str(width)+"x"+str(height)
@@ -170,6 +176,23 @@ def dataToFile(name, screensize, headers, filedata):
     except Exception as e:
         print(e)
         exit("Error saving filedata to .csv file!")
+
+#Translate linux numpad keypresses to correct numbers
+def findKey(key):
+    if key==176: key=ord('0')
+    if key==177: key=ord('1')
+    if key==178: key=ord('2')
+    if key==179: key=ord('3')
+    if key==180: key=ord('4')
+    if key==181: key=ord('5')
+    if key==182: key=ord('6')
+    if key==183: key=ord('7')
+    if key==184: key=ord('8')
+    if key==185: key=ord('9')
+    if key==ord('q'): return key
+    if key==ord('j'): return key
+
+    return key
         
 #Main loop
 correct = 0     #Number of correct answers
@@ -236,6 +259,11 @@ while True:
     if key == -1:
         key = cv2.waitKey(0)
     else: pass
+    
+    # print pressed key for testing
+    #print("Pressed: "+str(round-1)+" : "+str(chr(key)))
+
+    key = findKey(key)
 
     #Wait till key is pressed
     if key == ord('q'):                 #QUIT
@@ -276,5 +304,3 @@ while True:
     #print the time that took to answer. For testing!
     print("kierroksen aika oli: " +str(t2/1000000000))
     key = None
-
-    
