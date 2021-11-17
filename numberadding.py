@@ -56,16 +56,22 @@ cv2.namedWindow('appi', cv2.WND_PROP_FULLSCREEN)
 cv2.setWindowProperty('appi', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 sleep(1)
 
+#Get screen size in windows
 window_size = cv2.getWindowImageRect('appi')
 if window_size[2] > 1:
     width = window_size[2]
     print ("Width = " + str(width))
     height = window_size[3]
     print ("Height = " + str(height))
+#Get screen size in Ubuntu
 else:
-    print("Window size could not be determined! Using 3440 x 1440")
-    width = 3440
-    height = 1440
+    import subprocess
+    resl = subprocess.Popen('xrandr | grep "\*" | cut -d" " -f4',shell=True, stdout=subprocess.PIPE).communicate()[0]
+    resl = resl.decode("utf-8")
+    window_size = resl.split('x')
+    width = int(window_size[0])
+    height = int(window_size[1])
+    print(str(width) + " x " + str(height))
 
 #Screen size string variable if screen size is detected
 if width > 0 and height > 0: screen_size = str(width)+"x"+str(height)
@@ -111,10 +117,24 @@ def countDown():
         break
 
 #Generate random answer between 0 and 9 and two integers that add to it
-def question():
+def question_old():
     answ = np.random.randint(10)
     if answ == 0: num1 = 0
     else: num1 = np.random.randint(answ)
+    if num1 == 9: num2 = 0
+    else: num2 = answ - num1
+    return num1, num2
+
+def question():
+    answ = np.random.randint(10) #random number (0-9)
+    if answ == 0:
+        if np.random.choice([0, 1]) == '0': #if answer is 0 then 50/50 chance to try new random generation
+            num1 = 0
+        else:
+            answ = np.random.randint(10)
+            num1 = np.random.randint(answ+1)
+    else: num1 = np.random.randint(answ+1)
+
     if num1 == 9: num2 = 0
     else: num2 = answ - num1
     return num1, num2
