@@ -1,5 +1,5 @@
 #############################################################################################
-######### 2021-11-06                  VERSION 0.2a                           J.PALO #########
+######### 2021-11-17                  VERSION 0.3a                           J.PALO #########
 #############################################################################################
 
 ###
@@ -160,7 +160,7 @@ def radius(wh):
         if (war == 0):
             return 0
         else:
-            if war > width/2: war = width/2
+            if war > width/2: war = width/2 #max x coordinate off center
             wh = np.random.randint(war*(-1),war,1)
             print (wh)
             return wh
@@ -170,7 +170,7 @@ def radius(wh):
         if (har == 0):
             return 0
         else:
-            if har > height/2: har = height / 2
+            if har > height/2: har = height / 2 #max y coordinate off center
             wh = np.random.randint(har*(-1),har,1)
             #print (wh)
             return wh
