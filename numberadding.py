@@ -1,5 +1,5 @@
 #############################################################################################
-######### 2021-11-06                  VERSION 0.1a                           J.PALO #########
+######### 2021-11-06                  VERSION 0.2a                           J.PALO #########
 #############################################################################################
 
 ###
@@ -23,7 +23,6 @@ import numpy as np
 import string
 import random
 import csv
-
 
 #Data that will be collected
 round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false = ([] for i in range(8))
@@ -111,7 +110,6 @@ def countDown():
         cv2.waitKey(1000)
         break
 
-
 #Generate random answer between 0 and 9 and two integers that add to it
 def question():
     answ = np.random.randint(10)
@@ -161,7 +159,6 @@ def saveData(rd,x,y,n1,n2,t1,t2,cf):
     time_showing.append(t1)
     time_took_to_answer.append(t2)
     correct_false.append(cf)
-
 
 #Create file from game data
 def dataToFile(name, screensize, headers, filedata):
@@ -257,24 +254,21 @@ while True:
     #If key NOT pressed while question was visible: hide number and wait for key to be pressed:
     cv2.imshow('appi', blank_image)
     if key == -1:
-        key = cv2.waitKey(0)
+        key = cv2.waitKey(0) #Wait till key is pressed
     else: pass
-    
-    # print pressed key for testing
-    #print("Pressed: "+str(round-1)+" : "+str(chr(key)))
-
+ 
+    #Translate keypad keypresses to correct format
     key = findKey(key)
 
-    #Wait till key is pressed
-    if key == ord('q'):                 #QUIT
+    #QUIT WHEN q IS PRESSED (no file saving)
+    if key == ord('q'):
         t2 = pt() - start
         cv2.destroyAllWindows()
         print(name + ": " + str(correct),"Correct")
-        #Save data on each cycle to a data table. (round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false)
-        saveData(round,x,y,a,b,t1,t2,cf)
-        dataToFile()
         exit()
-    elif key == ord(str(answer)):       #CORRECT ANSWER
+
+    #CORRECT ANSWER
+    elif key == ord(str(answer)):
         t2 = pt() - start
         # number pressed = answer
         correct += 1
@@ -282,23 +276,29 @@ while True:
         #Save data on each cycle to a data table. (round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false)
         saveData(round,x,y,a,b,t1,t2,cf)
         pass
-    elif key == ord('j'):               #CHEAT AND MARK CORRECT ANSWER
+    
+    #CHEAT AND MARK CORRECT ANSWER AND CONTINUE GAME
+    elif key == ord('j'):
         t2 = pt() - start
         correct += 1
         cf = True #was correct
         #Save data on each cycle to a data table. (round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false)
         saveData(round,x,y,a,b,t1,t2,cf)
         pass
-    else:                               #WRONG ASNWER
+    
+    #WRONG ANSWER
+    else:
         t2 = pt() - start
         wc = False #was false
         #Save data on each cycle to a data table. (round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false)
         saveData(round,x,y,a,b,t1,t2,cf)
         print(name + ": " + str(correct),"Correct")
         
+        #Save data to file
         filedata = zip(round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false)
         dataToFile(str(name),str(screen_size),headers,filedata)
 
+        cv2.destroyAllWindows()
         exit()
 
     #print the time that took to answer. For testing!
