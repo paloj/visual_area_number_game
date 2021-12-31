@@ -347,5 +347,5 @@ while True:
         exit()
 
     #print the time that took to answer. For testing!
-    print("kierroksen aika oli: " +str(t2/1000000000))
+    print("This round lasted: " +str(t2/1000000000))
     key = None
