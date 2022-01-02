@@ -35,7 +35,7 @@ filedata = [round_no, x_coordinate, y_coordinate, number1,
 # Test if name, maxtime and mintime is given as commandline argument
 # name=player name, maxtime(mt)=time the number question will be visible at the beginning, mintime(it)=minimun time that the question will be visible
 try:
-    name = sys.argv[1]
+    name = sys.argv[1].lower()
 except:
     print("No name given, name prompt will appear")
     name = ""
@@ -50,10 +50,15 @@ except:
     print("No min visibility time given. Default 100ms will be used")
     it = 100  # mIn time that question is visible
 try:
-    steps = float(sys.argv[3])
+    steps = float(sys.argv[4])
 except:
     print("No number of steps given. Default 100 will be used")
     steps = 100  # How many rounds from maxtime to mintime
+try:
+    wrong = int(sys.argv[5])
+except:
+    print("No specific number of errors given that causes quit. Default 3 will be used")
+    wrong = 3
 
 # setup text
 font = cv2.FONT_HERSHEY_SIMPLEX
@@ -94,7 +99,7 @@ blank_image = np.zeros((height, width, 3), np.uint8)
 def name_input():
     text = ""
     namebox = np.zeros((height, width, 3), np.uint8)
-    letters = string.ascii_lowercase + string.digits
+    letters = string.ascii_letters + string.digits
     while True:
         key = cv2.waitKey(1)
         for letter in letters:
@@ -108,7 +113,7 @@ def name_input():
         namebox = cv2.putText(
             namebox, "Name: "+text, (int(width/2)-200, int(height/2)), font, 1, (255, 255, 0), 2)
         cv2.imshow('appi', namebox)
-    return text
+    return text.lower()
 
 
 def countDown():
@@ -279,7 +284,7 @@ def timeVisible(round):
 
 # Main loop
 correct = 0  # Number of correct answers
-wrong = 0  # Number of wrong aswers
+wrong_total = 0
 center = True  # Was the last question on center
 round = 0  # Round number
 while True:
@@ -391,19 +396,24 @@ while True:
 
     # WRONG ANSWER
     else:
-        t2 = pt() - start
-        wc = False  # was false
-        # Save data on each cycle to a data table. (round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false)
-        saveData(round, x, y, a, b, t1, t2, cf)
-        print(name + ": " + str(correct), "Correct")
+        wrong_total += 1
 
-        # Save data to file
-        filedata = zip(round_no, x_coordinate, y_coordinate, number1,
-                       number2, time_showing, time_took_to_answer, correct_false)
-        dataToFile(str(name), str(screen_size), headers, filedata)
+        if wrong_total < wrong:
+            pass
+        else:
+            t2 = pt() - start
+            wc = False  # was false
+            # Save data on each cycle to a data table. (round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false)
+            saveData(round, x, y, a, b, t1, t2, cf)
+            print(name + ": " + str(correct), "Correct")
 
-        cv2.destroyAllWindows()
-        exit()
+            # Save data to file
+            filedata = zip(round_no, x_coordinate, y_coordinate, number1,
+                        number2, time_showing, time_took_to_answer, correct_false)
+            dataToFile(str(name), str(screen_size), headers, filedata)
+
+            cv2.destroyAllWindows()
+            exit()
 
     # print the time that took to answer. For testing!
     print("This round lasted: " + str(t2/1000000000))
