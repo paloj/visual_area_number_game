@@ -40,25 +40,25 @@ except:
     print("No name given, name prompt will appear")
     name = ""
 try:
-    mt = float(sys.argv[2])
+    wrong = int(sys.argv[2])
+except:
+    print("No specific number of errors given that causes quit. Default 3 will be used")
+    wrong = 3
+try:
+    mt = float(sys.argv[3])
 except:
     print("No max visibility time given. Default 1s will be used")
     mt = 1000  # max time that question is visible
 try:
-    it = float(sys.argv[3])
+    it = float(sys.argv[4])
 except:
     print("No min visibility time given. Default 100ms will be used")
     it = 100  # mIn time that question is visible
 try:
-    steps = float(sys.argv[4])
+    steps = float(sys.argv[5])
 except:
     print("No number of steps given. Default 100 will be used")
     steps = 100  # How many rounds from maxtime to mintime
-try:
-    wrong = int(sys.argv[5])
-except:
-    print("No specific number of errors given that causes quit. Default 3 will be used")
-    wrong = 3
 
 # setup text
 font = cv2.FONT_HERSHEY_SIMPLEX
