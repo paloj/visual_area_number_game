@@ -42,8 +42,8 @@ except:
 try:
     wrong = int(sys.argv[2])
 except:
-    print("No specific number of errors given that causes quit. Default 3 will be used")
-    wrong = 3
+    print("No specific number of errors given that causes quit. Default 10 will be used")
+    wrong = 10
 try:
     mt = float(sys.argv[3])
 except:
@@ -57,8 +57,8 @@ except:
 try:
     steps = float(sys.argv[5])
 except:
-    print("No number of steps given. Default 100 will be used")
-    steps = 100  # How many rounds from maxtime to mintime
+    print("No number of steps given. Default 200 will be used")
+    steps = 200  # How many rounds from maxtime to mintime
 
 # setup text
 font = cv2.FONT_HERSHEY_SIMPLEX
@@ -397,14 +397,16 @@ while True:
     # WRONG ANSWER
     else:
         wrong_total += 1
+        t2 = pt() - start
+
+        wc = False  # was false
+        # Save data on each cycle to a data table. (round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false)
+        saveData(round, x, y, a, b, t1, t2, cf)
 
         if wrong_total < wrong:
             pass
-        else:
-            t2 = pt() - start
-            wc = False  # was false
-            # Save data on each cycle to a data table. (round_no, x_coordinate, y_coordinate, number1, number2, time_showing, time_took_to_answer, correct_false)
-            saveData(round, x, y, a, b, t1, t2, cf)
+        else: #quit game when wrong_total >= wrong
+            
             print(name + ": " + str(correct), "Correct")
 
             # Save data to file
