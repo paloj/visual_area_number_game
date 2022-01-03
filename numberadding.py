@@ -153,7 +153,7 @@ def question_old():
     return num1, num2
 
 
-def question():
+def question(f=False):
     answ = np.random.randint(10)  # random number (0-9)
     if answ == 0:
         # if answer is 0 then 50/50 chance to try new random generation
@@ -169,7 +169,12 @@ def question():
         num2 = 0
     else:
         num2 = answ - num1
-    return num1, num2
+    #return fake answers as string
+    if f:
+        return f"{num1}-{num2}"
+    #return right ansver
+    else:
+        return num1, num2
 
 # remapping function
 
@@ -187,14 +192,16 @@ def radius(wh):
     # How far off center can question appear?
     if (wh == 1):
         war = int((width/2)*remap(correct/100, 0, 100, 0, 100))
-        print(war)
+        #print(war)
         if (war == 0):
             return 0
         else:
             if war > width/2:
                 war = width/2  # max x coordinate off center
             wh = np.random.randint(war*(-1), war, 1)
-            print(wh)
+            #minimum distance from center
+            if abs(wh) < 30: wh=wh*2
+            #print(wh)
             return wh
     else:
         har = int((height/2)*remap(correct/100, 0, 100, 0, 100))
@@ -205,6 +212,8 @@ def radius(wh):
             if har > height/2:
                 har = height / 2  # max y coordinate off center
             wh = np.random.randint(har*(-1), har, 1)
+            #minium distance from center
+            if abs(wh) < 30: wh = wh*2
             #print (wh)
             return wh
 
@@ -281,6 +290,113 @@ def timeVisible(round):
     else:
         return int(it)
 
+def drawDistracion(image,fa1,fa2,fa3,fa4,x,y,center):
+    #if center:
+    if (width/2)-80 <= x <= (width/2)+80:
+        x = x + 80
+    if (height/2)-80 <= y <= (height/2)+80:
+        y = y + 80
+
+    
+    if x < width/2:
+        if y < height/2: #left upper
+            #fake left lower
+            image = cv2.putText(blank_image, fa1, (x, height-y), font, 1, (255, 255, 0), 2)
+            #fake right lower
+            image = cv2.putText(blank_image, fa2, (width-x, height-y), font, 1, (255, 255, 0), 2)
+            #fake right upper
+            image = cv2.putText(blank_image, fa3, (width-x, y), font, 1, (255, 255, 0), 2)
+            if center:
+                #fake left upper
+                image = cv2.putText(blank_image, fa4, (x, y), font, 1, (255, 255, 0), 2)
+            else:
+                #fake center
+                image = cv2.putText(blank_image, fa4, (int(width/2), int(height/2)), font, 1, (255, 255, 0), 2)
+            return image
+
+        else: #left lower
+            #fake left upper
+            image = cv2.putText(blank_image, fa1, (x, height-y), font, 1, (255, 255, 0), 2)
+            #fake right lower
+            image = cv2.putText(blank_image, fa2, (width-x, y), font, 1, (255, 255, 0), 2)
+            #fake right upper
+            image = cv2.putText(blank_image, fa3, (width-x, height-y), font, 1, (255, 255, 0), 2)
+            if center:
+                #fake left lower
+                image = cv2.putText(blank_image, fa4, (x, y), font, 1, (255, 255, 0), 2)
+            else:
+                #fake center
+                image = cv2.putText(blank_image, fa4, (int(width/2), int(height/2)), font, 1, (255, 255, 0), 2)
+            return image
+    else:
+        if y < height/2: #right upper
+            #fake left lower
+            image = cv2.putText(blank_image, fa1, (width-x, height-y), font, 1, (255, 255, 0), 2)
+            #fake left upper
+            image = cv2.putText(blank_image, fa2, (width-x, y), font, 1, (255, 255, 0), 2)
+            #fake right lower
+            image = cv2.putText(blank_image, fa3, (x, height-y), font, 1, (255, 255, 0), 2)
+            if center:
+                #fake right upper
+                image = cv2.putText(blank_image, fa4, (x, y), font, 1, (255, 255, 0), 2)
+            else:
+                #fake center
+                image = cv2.putText(blank_image, fa4, (int(width/2), int(height/2)), font, 1, (255, 255, 0), 2)
+            return image
+
+        else: #right lower
+            #fake left lower
+            image = cv2.putText(blank_image, fa1, (x, height-y), font, 1, (255, 255, 0), 2)
+            #fake left upper
+            image = cv2.putText(blank_image, fa2, (width-x, height-y), font, 1, (255, 255, 0), 2)
+            #fake right upper
+            image = cv2.putText(blank_image, fa3, (width-x, y), font, 1, (255, 255, 0), 2)
+            if center:
+                #fake right lower
+                image = cv2.putText(blank_image, fa4, (x, y), font, 1, (255, 255, 0), 2)
+            else:
+                #fake center
+                image = cv2.putText(blank_image, fa4, (int(width/2), int(height/2)), font, 1, (255, 255, 0), 2)
+            return image
+    
+def xyTangent(c):
+    #a = angle clockwise from 12:00 o'clock
+    a = np.random.randint(1,361)
+    #c = length of tangent
+
+    if a == 360: # Straight up
+        x = width/2
+        y = (height/2) - c
+    elif a == 90: #Right
+        x = width/2 + c
+        y = height/2
+    elif a == 180: #Down
+        x = width/2
+        y = (height/2) + c
+    elif a == 270: #Left
+        x = width/2 - c
+        y = height/2
+
+    elif 0 < a < 90:
+        x = width/2 + np.sin(a)*c #x right from center
+        y = height/2 - np.cos(a)*c #y up from center (negative direction)
+        
+    elif 90 < a < 180:
+        a = a-90
+        y = height/2 + np.sin(a)*c #y down from center
+        x = width/2 + np.cos(a)*c #x right from center
+        
+    elif 180 < a < 270:
+        a = a-180
+        x = width/2 - np.sin(a)*c #x left from center (negative direction)
+        y = height/2 + np.cos(a)*c #y down from center
+        
+    else:
+        a = a-270
+        y = height/2 - np.sin(a)*c #y up from center (negative direction)
+        x = width/2 - np.cos(a)*c #x left from center (negative direction)
+
+    return int(x), int(y)
 
 # Main loop
 correct = 0  # Number of correct answers
@@ -309,11 +425,20 @@ while True:
     a, b = question()
     answer = a+b
 
+    # Generate fake anwers
+    fa1 = question(True)
+    fa2 = question(True)
+    fa3 = question(True)
+    fa4 = question(True)
+    print(f"fa1:{fa1} fa2:{fa2} fa3:{fa3} fa4:{fa4}")
+
     # Form a question string from the generated numbers. 50% chance for the order
     if np.random.choice([0, 1]) == 0:
         qstring = str(a)+"+"+str(b)
+        fake_st = str(a)+"-"+str(b)
     else:
         qstring = str(b)+"+"+str(a)
+        fake_st = str(b)+"-"+str(a)
 
     # Blank screen images before every cycle
     image = np.zeros((height, width, 3), np.uint8)
@@ -321,28 +446,34 @@ while True:
     cv2.imshow('appi', image)
 
     # Calculate the area where the numbers can appear
-    x = int(width/2+(radius(1)))
+    # x = int(width/2+(radius(1)))
+    # y = int(height/2+(radius(2)))
+    #Testing: get x and y from random 0-360dg + distance coordinates
+    x, y = xyTangent(radius(1))
     if x < 10:
         x = 10
     if x > width-80:
         x = width - 80
 
-    y = int(height/2+(radius(2)))
     if y < 30:
         y = 30
     if y > height-50:
-        y = height - 50
+        y = height - 50    
 
-    # If previous question was in a center, place question away from center of screen with a 66% chance
-    if(center == True and random.randrange(3) != 0):
+    # If previous question was in a center, place question away from center of screen with a 75% chance
+    if(center == True and random.randrange(4) != 0):
         image = cv2.putText(blank_image, qstring, (x, y),
                             font, 1, (255, 255, 0), 2)
         center = False
+
     # If previous question was away from a center, place question directly to center of screen
     else:
         image = cv2.putText(blank_image, qstring, (int(
             width/2), int(height/2)), font, 1, (255, 255, 0), 2)
         center = True
+
+    #Draw fake distraction numbers in a-b style
+    #image = drawDistracion(image,fa1,fa2,fa3,fa4,x,y,center)
 
     # Show question
     cv2.imshow('appi', image)
